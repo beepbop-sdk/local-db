@@ -1,5 +1,5 @@
 import deepEqual from "fast-deep-equal";
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import type { z } from "zod";
 import { getStore } from "./components/store-registry";
 
@@ -17,28 +17,23 @@ export type UseLocalDbReturn<T> = {
   setValue: (next: T | null) => void;
 };
 
+export const defaultIsEqual = <T>(a: T | null | undefined, b: T | null | undefined): boolean => {
+  if (a === b) return true; // primitives, same ref, null/undefined
+  if (!a || !b) return false; // one side is null/undefined
+  if (typeof a !== "object" || typeof b !== "object") return false;
+  return deepEqual(a, b); // deep structural compare (fast-deep-equal)
+};
+
+export const validateWithSchema = <T>(schema: z.ZodSchema<T>, val: T | null): boolean => {
+  return val === null ? true : schema.safeParse(val).success;
+};
+
 export function useLocalDb<T>({ key, schema, initialValue = null, dbName, storeName }: T_UseLocalDb<T>): UseLocalDbReturn<T> {
-  const isValid = useMemo(
-    () => (val: T | null) => {
-      if (val === null) return true;
-      const res = schema.safeParse(val);
-      return res.success;
-    },
-    [schema]
-  );
-
-  const isEqual = useMemo(
-    () => (a: T | null | undefined, b: T | null | undefined) => {
-      if (a === b) return true; // handles primitives + null/undefined fast path
-      if (!a || !b) return false; // one is null/undefined and they weren't ===
-      if (typeof a !== "object" || typeof b !== "object") return false;
-      return deepEqual(a, b);
-    },
-    []
-  );
-
-  const initialRef = useRef(initialValue);
+  const initialRef = useRef<T | null>(initialValue);
   const ns = useMemo(() => ({ dbName, storeName }), [dbName, storeName]);
+
+  const isValid = useCallback((val: T | null) => validateWithSchema(schema, val), [schema]);
+  const isEqual = defaultIsEqual<T>;
 
   const store = useMemo(() => getStore<T>(key, initialRef.current, isValid, isEqual, ns), [key, isValid, isEqual, ns]);
 
@@ -54,13 +49,16 @@ export function useLocalDb<T>({ key, schema, initialValue = null, dbName, storeN
   const setValue = useCallback(
     (next: T | null) => {
       if (store.isEqual(value, next)) return;
+
       const safe = isValid(next) ? next : (store.repairTo as T | null);
       store.setValue(safe);
     },
     [store, value, isValid]
   );
 
-  store.hydrate();
+  useEffect(() => {
+    store.hydrate();
+  }, [store]);
 
   return { value, setValue };
 }
