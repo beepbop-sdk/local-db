@@ -21,24 +21,14 @@
     "url": "https://github.com/bigbang-sdk/local-db.git"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc -p tsconfig.json",
     "pack": "npm run build && npm pack --pack-destination ./archive/"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    }
   },
   "devDependencies": {
     "@types/bun": "latest"
