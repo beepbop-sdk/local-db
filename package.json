@@ -34,6 +34,7 @@
     "@types/bun": "latest"
   },
   "peerDependencies": {
+    "react": "^19",
     "typescript": "^5"
   },
   "dependencies": {
