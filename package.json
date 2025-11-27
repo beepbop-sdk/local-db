@@ -31,7 +31,8 @@
     "pack": "npm run build && npm pack --pack-destination ./archive/"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/react": "^19.2.7"
   },
   "peerDependencies": {
     "react": "^19",
