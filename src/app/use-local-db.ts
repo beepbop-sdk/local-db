@@ -1,7 +1,7 @@
-import deepEqual from "fast-deep-equal";
 import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import type { z } from "zod";
 import { getStore } from "./components/store-registry";
+import { isDeepEqual } from "@bigbang-sdk/deep-equal";
 
 export type T_UseLocalDb<T> = {
   key: string;
@@ -17,13 +17,6 @@ export type UseLocalDbReturn<T> = {
   setValue: (next: T | null) => void;
 };
 
-export const defaultIsEqual = <T>(a: T | null | undefined, b: T | null | undefined): boolean => {
-  if (a === b) return true; // primitives, same ref, null/undefined
-  if (!a || !b) return false; // one side is null/undefined
-  if (typeof a !== "object" || typeof b !== "object") return false;
-  return deepEqual(a, b); // deep structural compare (fast-deep-equal)
-};
-
 export const validateWithSchema = <T>(schema: z.ZodSchema<T>, val: T | null): boolean => {
   return val === null ? true : schema.safeParse(val).success;
 };
@@ -33,18 +26,21 @@ export function useLocalDb<T>({ key, schema, initialValue = null, dbName, storeN
   const ns = useMemo(() => ({ dbName, storeName }), [dbName, storeName]);
 
   const isValid = useCallback((val: T | null) => validateWithSchema(schema, val), [schema]);
-  const isEqual = defaultIsEqual<T>;
+  const isEqual = isDeepEqual;
 
   const store = useMemo(() => getStore<T>(key, initialRef.current, isValid, isEqual, ns), [key, isValid, isEqual, ns]);
 
-  const value = useSyncExternalStore(
-    (listener) => {
+  const subscribe = useCallback(
+    (listener: () => void) => {
       store.listeners.add(listener);
       return () => store.listeners.delete(listener);
     },
-    () => store.value,
-    () => store.value
-  ) as T | null | undefined;
+    [store]
+  );
+
+  const getSnapshot = useCallback(() => store.value, [store]);
+
+  const value = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
   const setValue = useCallback(
     (next: T | null) => {
