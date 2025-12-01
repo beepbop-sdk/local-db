@@ -1,6 +1,6 @@
 {
   "name": "@bb-sdk/local-db",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "A library for local database using IndexedDB and Zod for React",
   "homepage": "https://github.com/beepbop-sdk/local-db",
   "keywords": [
