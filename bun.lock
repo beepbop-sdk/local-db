@@ -4,7 +4,7 @@
     "": {
       "name": "local-db",
       "dependencies": {
-        "@bigbang-sdk/deep-equal": "^0.0.1",
+        "@bb-sdk/deep-equal": "^0.0.1",
         "fast-deep-equal": "^3.1.3",
         "idb-keyval": "^6.2.2",
         "zod": "^4.1.12",
@@ -20,7 +20,11 @@
     },
   },
   "packages": {
-    "@bigbang-sdk/deep-equal": ["@bigbang-sdk/deep-equal@0.0.1", "", { "dependencies": { "fast-deep-equal": "^3.1.3", "superjson": "^2.2.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-Ku4gS+zGCAFaml+3ybxHJNED9hw2sJdmfCAJGiTWjEtnOGFVP1nxHnf2qTxejEB9kgghEK5qLD1uXIeIlHjRiA=="],
+    "@bb-sdk/deep-equal": ["@bb-sdk/deep-equal@0.0.1", "", { "dependencies": { "@bb-sdk/deep-sort": "^0.0.1", "fast-deep-equal": "^3.1.3", "superjson": "^2.2.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-w6U3gXV+eezXqUwYEDNbcRUFXCfjnnD51cmdOSxMbmYtw2/FAp8H5pgbYQkoqwwuSdH+fyvf+mbM2At6NmiT7Q=="],
+
+    "@bb-sdk/deep-sort": ["@bb-sdk/deep-sort@0.0.1", "", { "dependencies": { "@tamtamchik/json-deep-sort": "^1.4.1", "superjson": "^2.2.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-8u4/O/waiPz5VG1jtjTWus3GdAK480rTVytxHnFqzmr/PgnUq/Ka1fruZ638iB1Pn3/xwpKp3vwFEf24dfhEvw=="],
+
+    "@tamtamchik/json-deep-sort": ["@tamtamchik/json-deep-sort@1.4.1", "", {}, "sha512-hZUC4jcaLQES+u2gzb5L9YWDClJqpiUFJDitKH8Y5B5k6Bw3cqnCEOB+wPTTaYAEwlyw0gIvSAt1C+k8D/NMsw=="],
 
     "@types/bun": ["@types/bun@1.3.1", "", { "dependencies": { "bun-types": "1.3.1" } }, "sha512-4jNMk2/K9YJtfqwoAa28c8wK+T7nvJFOjxI4h/7sORWcypRNxBpr+TPNaCfVWq70tLCJsqoFwcf0oI0JU/fvMQ=="],
 
