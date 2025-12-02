@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import type { z } from "zod";
 import { getStore } from "./components/store-registry";
-import { isDeepEqual } from "@bb-sdk/deep-equal";
+import { isDeepEqual } from "@bb-labs/deep-equal";
 
 export type T_UseLocalDb<T> = {
   key: string;
